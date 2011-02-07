@@ -17,9 +17,11 @@ package com.mixpanel
 		private var super_properties:Object = {"all": {}, "events": {}, "funnels": {}};
 		private var token:String;
 		private var api_host:String;
+		private var base64_encoder:Base64Encoder;
 		
 		public function Mixpanel(token:String) {
 			this.token = token;
+			this.base64_encoder = new Base64Encoder();
 			var protocol:String = MixpanelUtils.browserProtocol;
 			api_host = protocol + '//api.mixpanel.com';
 			
@@ -63,7 +65,8 @@ package com.mixpanel
 				'properties' : properties
 			};
 			
-			var encoded_data:String = base64_encode(json_encode(data)); // Security by obscurity
+			this.base64_encoder.encode(json_encode(data));
+			var encoded_data:String = this.base64_encoder.toString(); // Security by obscurity
 			
 			send_request(
 				api_host + '/track/', 
@@ -129,82 +132,6 @@ package com.mixpanel
 		private function json_encode(mixed_val:*):String {    
 			var encoder:JSONEncoder = new JSONEncoder(mixed_val);
 			return encoder.getString();
-		};
-		
-		private function base64_encode(data:*):String {        
-			var b64:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-			var o1:int, o2:int, o3:int, h1:int, h2:int, h3:int, h4:int, bits:int, i:int = 0, ac:int = 0, enc:String="", tmp_arr:Array = [];
-			
-			if (!data) {
-				return data;
-			}
-			
-			data = utf8_encode(data+'');
-			
-			do { // pack three octets into four hexets
-				o1 = data.charCodeAt(i++);
-				o2 = data.charCodeAt(i++);
-				o3 = data.charCodeAt(i++);
-
-				bits = o1<<16 | o2<<8 | o3;
-				
-				h1 = bits>>18 & 0x3f;
-				h2 = bits>>12 & 0x3f;
-				h3 = bits>>6 & 0x3f;
-				h4 = bits & 0x3f;
-				
-				// use hexets to index into b64, and append result to encoded string
-				tmp_arr[ac++] = b64.charAt(h1) + b64.charAt(h2) + b64.charAt(h3) + b64.charAt(h4);
-			} while (i < data.length);
-			
-			enc = tmp_arr.join('');
-			
-			switch( data.length % 3 ){
-				case 1:
-					enc = enc.slice(0, -2) + '==';
-					break;
-				case 2:
-					enc = enc.slice(0, -1) + '=';
-					break;
-			}
-			
-			return enc;
-		};
-		
-		private function utf8_encode(string:String):String {
-			string = (string+'').replace(/\r\n/g, "\n").replace(/\r/g, "\n");
-			
-			var utftext:String = "";
-			var start:int, end:int;
-			var stringl:int = 0;
-			
-			start = end = 0;
-			stringl = string.length;
-			for (var n:int = 0; n < stringl; n++) {
-				var c1:int = string.charCodeAt(n);
-				var enc:String = null;
-				
-				if (c1 < 128) {
-					end++;
-				} else if((c1 > 127) && (c1 < 2048)) {
-					enc = String.fromCharCode((c1 >> 6) | 192) + String.fromCharCode((c1 & 63) | 128);
-				} else {
-					enc = String.fromCharCode((c1 >> 12) | 224) + String.fromCharCode(((c1 >> 6) & 63) | 128) + String.fromCharCode((c1 & 63) | 128);
-				}
-				if (enc !== null) {
-					if (end > start) {
-						utftext += string.substring(start, end);
-					}
-					utftext += enc;
-					start = end = n+1;
-				}
-			}
-			
-			if (end > start) {
-				utftext += string.substring(start, string.length);
-			}
-			
-			return utftext;
 		};
 		
 		private function set_cookie(name:String, value:*):void {
