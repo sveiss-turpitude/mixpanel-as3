@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<flexLibProperties version="3">
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
-    <classEntry path="com.mixpanel.Base64Encoder"/>
     <classEntry path="com.mixpanel.Mixpanel"/>
-    <classEntry path="com.mixpanel.MixpanelUtils"/>
+    <classEntry path="com.mixpanel.Util"/>
+    <classEntry path="com.mixpanel.Storage"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
