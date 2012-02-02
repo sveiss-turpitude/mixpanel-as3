@@ -98,37 +98,44 @@ package com.mixpanel
 		
 		public function disable(events:Array = null):void
 		{
-						
+			if (events == null) {
+				disableAllEvents = true;
+			} else {
+				disabledEvents = disabledEvents.concat(events);
+			}
 		}
 		
 		public function register(properties:Object):void
 		{
-			
+			storage.register(properties);			
 		}
 		
-		public function registerOnce(properties:Object, default_val:* = null):void
+		public function registerOnce(properties:Object, defaultValue:* = null):void
 		{
-			
+			storage.registerOnce(properties, defaultValue);
 		}
 		
 		public function unregister(property:String):void
 		{
-			
+			storage.unregister(property);
 		}
 		
 		public function identify(uniqueID:String):void
 		{
-			
+			storage.register({ "distinct_id": uniqueID });
 		}
 		
 		public function nameTag(name:String):void
 		{
-			
+			storage.register({ "mp_name_tag": name });
 		}
 		
 		public function setConfig(config:Object):void
 		{
-			// TOOD: check cross_domain and update cookie if it changes			
+			if (config["crossSubdomainStorage"] && config.crossSubdomainStorage != this.config.crossSubdomainStorage) {
+				storage.updateCrossDomain(config.crossSubdomainStorage);
+			}
+			_.extend(this.config, config);
 		}
 	}
 }
