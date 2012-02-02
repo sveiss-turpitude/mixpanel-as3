@@ -2,6 +2,7 @@ package com.mixpanel
 {
 	import com.mixpanel.Mixpanel;
 	
+	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	
 	import org.flexunit.Assert;
@@ -26,25 +27,25 @@ package com.mixpanel
 		{
 		}
 		
-		private function stop(timeout:int):void {
+		private function stop(id:String, timeout:int = 10000):void {
 			var handler:Function = Async.asyncHandler(this, function () {}, timeout, {}, function() {
 				Assert.fail("async test failed to return within timeout");
 			});
 			
-			var id:String = Math.random().toString();
 			asyncDispatcher.addEventListener(id, handler);
 		}
 		
-		private function start():void {
-			asyncDispatcher.dispatchEvent("start");
+		private function start(id:String):void {
+			asyncDispatcher.dispatchEvent(new Event(id));
 		}
 				
 		[Test(async, description="check track callback")]
 		public function track():void {
-			stop();
+			var asyncID:String = "track_async1";
+			stop(asyncID);
 			mixpanel.track("test", {"hello": "world"}, function(resp:String) {
 				Assert.assertEquals(parseInt(resp), 1, "server returned success");
-				start();
+				start(asyncID);
 			});
 		}
 		
