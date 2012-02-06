@@ -63,10 +63,23 @@ package com.mixpanel
 			loader.load(request);
 		}
 		
-		public function track(event:String, properties:Object = null, callback:Function = null):Object
+		public function track(event:String, ...args):Object
 		{
+			var properties:Object = null, callback:Function = null;
+			
+			if (args.length == 2) {
+				properties = args[0];
+				callback = args[1];
+			} else {
+				if (args[0] instanceof Function) {
+					callback = args[0];
+				} else {
+					properties = args[0];
+				}
+			}
+			
 			if (disableAllEvents || disabledEvents.indexOf(event) != -1) {
-				return callback(0);
+				if (callback) { return callback(0); }
 			}
 		
 			if (!properties) { properties = {}; }

@@ -4,6 +4,8 @@ package com.mixpanel
 	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	
 	import org.flexunit.Assert;
 	import org.flexunit.async.Async;
@@ -12,6 +14,7 @@ package com.mixpanel
 	{
 		private var mixpanel:Mixpanel;
 		private var asyncDispatcher:EventDispatcher;
+		private static var asyncIDCounter:int = 0;
 		
 		[Before]
 		public function setUp():void
@@ -27,26 +30,49 @@ package com.mixpanel
 		{
 		}
 		
-		private function stop(id:String, timeout:int = 10000):void {
-			var handler:Function = Async.asyncHandler(this, function () {}, timeout, {}, function() {
+		private function asyncHandler(callback:Function, timeout:int = 10000):int {
+			var _this:MixpanelTest = this;
+			var handler:Function = Async.asyncHandler(this, function(evt:AsyncEvent, ...ignore):void {
+				callback.apply(_this, evt.args); 				
+			}, timeout, {}, function():void {
 				Assert.fail("async test failed to return within timeout");
 			});
 			
-			asyncDispatcher.addEventListener(id, handler);
+			var id:int = asyncIDCounter++;
+			asyncDispatcher.addEventListener(id.toString(), handler);
+			
+			return id;
 		}
 		
-		private function start(id:String):void {
-			asyncDispatcher.dispatchEvent(new Event(id));
+		private function start(id:int, ...args):void {
+			asyncDispatcher.dispatchEvent(new AsyncEvent(id.toString(), args));
 		}
-				
+		
 		[Test(async, description="check track callback")]
 		public function track():void {
-			var asyncID:String = "track_async1";
-			stop(asyncID);
-			mixpanel.track("test", {"hello": "world"}, function(resp:String) {
-				Assert.assertEquals(parseInt(resp), 1, "server returned success");
-				start(asyncID);
+			var asyncID:int = asyncHandler(function(resp:String):void {
+				Assert.assertEquals("server returned success", resp, "1");
 			});
+			
+			mixpanel.track("test_track", {"hello": "world"}, function(resp:String):void {	
+				start(asyncID, resp);
+			});
+		}
+		
+		[Test(async, description="check parallel track()'s")]
+		public function track_multiple():void {
+			var result:Array = [];
+			
+			mixpanel.track("test_multiple", function(resp:String):void { 
+				result.push(1);
+			});
+			mixpanel.track("test_multiple", function(resp:String):void {
+				result.push(2);
+			});
+			
+			Async.delayCall(this, function():void {
+				Assert.assertTrue("Both track()'s failed to fire", result.indexOf(1) != -1 && result.indexOf(2) != -1);
+			}, 2000);
 		}
 		
 	}
