@@ -155,6 +155,21 @@ package com.mixpanel
 			var mp3:Mixpanel = makeMP();
 			Assert.assertFalse("library should create new shared object", mp3.storage.has("test"));
 		}
+		
+		[Test(description="track() super properties are included")]
+		public function track_super_properties():void {
+			var props = { 'a': 'b', 'c': 'd' };
+			localMix.register(props);
+			
+			var data = localMix.track('test'),
+				dp = data.properties;
+			
+			Assert.assertTrue("token included in properties", dp.hasOwnProperty("token"));
+			Assert.assertTrue("time included in properties", dp.hasOwnProperty("time"));
+			Assert.assertTrue("mp_lib included in properties", dp.hasOwnProperty("mp_lib"));
+			Assert.assertEquals("super properties included properly", dp['a'], props['a']);
+			Assert.assertEquals("super properties included properly", dp['c'], props['c']);
+		}
 	}
 }
 
