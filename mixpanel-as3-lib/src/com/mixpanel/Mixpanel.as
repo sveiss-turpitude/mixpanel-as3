@@ -33,7 +33,7 @@ package com.mixpanel
 			
 			config = _.extend({}, defaultConfig, {
 				apiHost: protocol + '//api.mixpanel.com/track/',
-				storageName: "mixpanel_" + token,
+				storageName: "mp_" + token,
 				token: token
 			});
 			
