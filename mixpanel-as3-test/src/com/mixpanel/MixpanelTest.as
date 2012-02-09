@@ -255,7 +255,6 @@ package com.mixpanel
 			localMix.name_tag(name);
 			Assert.assertEquals("name tag set", localMix.storage.get("mp_name_tag"), name);
 		}
-
 	}
 }
 

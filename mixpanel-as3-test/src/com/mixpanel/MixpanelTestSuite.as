@@ -7,6 +7,6 @@ package com.mixpanel
 	public class MixpanelTestSuite
 	{
 		public var test1:com.mixpanel.MixpanelTest;
-		
+		public var test2:com.mixpanel.StorageBackendTest;
 	}
 }

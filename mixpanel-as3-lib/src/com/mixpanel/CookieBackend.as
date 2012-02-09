@@ -1,9 +1,13 @@
 package com.mixpanel
 {
+	import com.adobe.serialization.json.JSONParseError;
+	
 	import flash.external.ExternalInterface;
 	
 	internal class CookieBackend implements IStorageBackend
 	{
+		private static var inserted_js:Boolean = false;
+		
 		private static const getCookie:String = "mp_get_cookie";
 		private static var functionGetCookie:String = ( <![CDATA[
 			function () {
@@ -50,8 +54,11 @@ package com.mixpanel
 				return null;
 			}
 			
-			ExternalInterface.call(functionGetCookie);
-			ExternalInterface.call(functionSetCookie);
+			if (!CookieBackend.inserted_js) {
+				ExternalInterface.call(functionGetCookie);
+				ExternalInterface.call(functionSetCookie);
+				CookieBackend.inserted_js = true;
+			}
 		
 			this.o = load();
 			
@@ -60,7 +67,13 @@ package com.mixpanel
 
 		private function load():Object {
 			var data:String = ExternalInterface.call(getCookie, name) as String;
-			return (data == null) ? {} : util.jsonDecode(data);
+			try {
+				if (data) { return util.jsonDecode(data); }
+			} catch (err:JSONParseError) {
+				// ignore json parse errors
+			}
+			
+			return {};
 		}
 		
 		public function save():void
@@ -69,7 +82,7 @@ package com.mixpanel
 		}
 		
 		public function updateCrossDomain(crossDomainStorage:Boolean):void {
-			//TODO: FIXME: XXX: updateCrossDomain();
+			//nop
 		}
 		
 		public function has(key:String):Boolean
