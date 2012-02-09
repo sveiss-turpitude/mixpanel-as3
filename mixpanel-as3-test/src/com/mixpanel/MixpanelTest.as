@@ -19,13 +19,18 @@ package com.mixpanel
 		private var asyncDispatcher:EventDispatcher;
 		private static var asyncIDCounter:int = 0;
 		
+		private function makeMP(token:String=null, config:Object=null):Mixpanel {
+			if (!token) { token = UIDUtil.createUID(); }
+			var mp:Mixpanel = new Mixpanel(token);
+			if (config) { mp.setConfig(config); }
+			return mp;
+		}
+		
 		[Before]
 		public function setUp():void
 		{
-			mixpanel = new Mixpanel("4874fb5a6ac20d3c883349defcfb9c99");
-			mixpanel.setConfig({ test: 1 });
-			
-			localMix = new Mixpanel(UIDUtil.createUID());
+			mixpanel = makeMP("4874fb5a6ac20d3c883349defcfb9c99", { test: 1 });
+			localMix = makeMP();
 			
 			asyncDispatcher = new EventDispatcher();
 		}
@@ -93,6 +98,32 @@ package com.mixpanel
 			Assert.assertEquals("track() should not override an already set distinct id", data.properties["distinct_id"], id);
 		}
 		
+		[Test(async, description="disable() disabled all tracking from firing")]
+		public function disable_events_from_firing():void {
+			localMix.disable();
+			
+			localMix.track("e_a", function(resp) {
+				Assert.assertEquals("track should return an error", resp, 0);
+			});
+			
+			var mp:Mixpanel = makeMP();
+			mp.disable(["event_a"]);
+			mp.disable(["event_c"]);
+			
+			var asyncID:int = asyncHandler(function(resp:String):void {
+				Assert.assertEquals("server returned success", resp, "1");
+			});
+			
+			mp.track("event_a", function(resp) {
+				Assert.assertEquals("track should return an error", resp, 0);
+			});
+			mp.track("event_b", function(resp) {
+				start(asyncID, resp);
+			});
+			mp.track("event_c", function(resp) {
+				Assert.assertEquals("track should return an error", resp, 0);
+			});
+		}
 	}
 }
 
