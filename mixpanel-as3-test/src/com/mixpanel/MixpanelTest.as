@@ -182,6 +182,13 @@ package com.mixpanel
 			Assert.assertEquals("manual property overrides successfully", dp["a"], "test");
 			Assert.assertEquals("other superproperties unnaffected", dp["c"], "d");
 		}
+		
+		[Test(description="set_config works")]
+		public function set_config():void {
+			Assert.assertEquals("config.test is false", localMix.config.test, false);
+			localMix.setConfig({ test: true });
+			Assert.assertEquals("config.test is true", localMix.config.test, true);
+		}
 	}
 }
 

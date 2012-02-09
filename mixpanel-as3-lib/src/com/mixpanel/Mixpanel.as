@@ -15,12 +15,12 @@ package com.mixpanel
 	public class Mixpanel
 	{
 		private var _:Util;
-		private var config:Object;
 		private var token:String;
 		private var disableAllEvents:Boolean = false;
 		private var disabledEvents:Array = [];
 		
 		internal var storage:Storage;
+		internal var config:Object;
 		
 		private var defaultConfig:Object = {
 			crossSubdomainStorage: true,
