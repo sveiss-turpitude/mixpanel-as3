@@ -189,6 +189,73 @@ package com.mixpanel
 			localMix.setConfig({ test: true });
 			Assert.assertEquals("config.test is true", localMix.config.test, true);
 		}
+		
+		[Test(description="register()")]
+		public function register():void {
+			var props:Object = {'hi': 'there'};
+			
+			Assert.assertFalse("empty before setting", localMix.storage.has("hi"));
+			
+			localMix.register(props);
+			
+			Assert.assertTrue("prop set properly", localMix.storage.has("hi"));
+		}
+		
+		[Test(description="register_once()")]
+		public function register_once():void {
+			var props:Object = {'hi': 'there'},
+				props1:Object = {'hi': 'ho'};
+			
+			Assert.assertFalse("empty before setting", localMix.storage.has("hi"));
+			
+			localMix.registerOnce(props);
+			
+			Assert.assertTrue("prop set properly", localMix.storage.has("hi"));
+			
+			localMix.registerOnce(props1);
+			
+			Assert.assertEquals("doesn't override", localMix.storage.get("hi"), props["hi"]);
+		}
+		
+		[Test(description="unregister()")]
+		public function unregister():void {
+			var props:Object = {'hi': 'there'};
+			
+			Assert.assertFalse("empty before setting", localMix.storage.has("hi"));
+			
+			localMix.register(props);
+			
+			Assert.assertTrue("prop set properly", localMix.storage.has("hi"));
+			
+			localMix.unregister("hi");
+			
+			Assert.assertFalse("empty after unregistering", localMix.storage.has("hi"));
+		}
+		
+		[Test(description="identify")]
+		public function identify():void {
+			var distinct:String = UIDUtil.createUID(),
+				changed:String = UIDUtil.createUID();
+			
+			Assert.assertFalse("empty before setting", localMix.storage.has("distinct_id"));
+			
+			localMix.identify(distinct);
+			Assert.assertEquals("set distinct", localMix.storage.get("distinct_id"), distinct);
+			
+			localMix.identify(changed);
+			Assert.assertEquals("distinct was changed", localMix.storage.get("distinct_id"), changed);
+		}
+		
+		[Test(description="name_tag")]
+		public function name_tag():void {
+			var name:String = "bob";
+			
+			Assert.assertFalse("empty before setting", localMix.storage.has("mp_name_tag"));
+			
+			localMix.nameTag(name);
+			Assert.assertEquals("name tag set", localMix.storage.get("mp_name_tag"), name);
+		}
+
 	}
 }
 
