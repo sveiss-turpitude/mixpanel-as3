@@ -170,6 +170,18 @@ package com.mixpanel
 			Assert.assertEquals("super properties included properly", dp['a'], props['a']);
 			Assert.assertEquals("super properties included properly", dp['c'], props['c']);
 		}
+		
+		[Test(description="track() manual props override super props")]
+		public function track_manual_override():void {
+			var props = { 'a': 'b', 'c': 'd' };
+			localMix.register(props);
+			
+			var data = localMix.track('test', { "a": "test" }),
+				dp = data.properties;
+			
+			Assert.assertEquals("manual property overrides successfully", dp["a"], "test");
+			Assert.assertEquals("other superproperties unnaffected", dp["c"], "d");
+		}
 	}
 }
 
