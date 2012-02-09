@@ -10,6 +10,8 @@ package com.mixpanel
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	
+	import mx.utils.UIDUtil;
+	
 	public class Mixpanel
 	{
 		private var _:Util;
@@ -63,6 +65,18 @@ package com.mixpanel
 			loader.load(request);
 		}
 		
+		
+		/**
+		 * Track an event.  This is the most important Mixpanel function and
+		 * the one you will be using the most
+		 *  
+		 * @param event the name of the event
+		 * @param args if the first arg in args is an object, it will be used
+		 * as the properties object, the second arg is an optional callback function.
+		 * The callback and properties arguments are both optional.
+		 * @return the data sent to the server
+		 * 
+		 */
 		public function track(event:String, ...args):Object
 		{
 			var properties:Object = null, callback:Function = null;
@@ -71,7 +85,7 @@ package com.mixpanel
 				properties = args[0];
 				callback = args[1];
 			} else {
-				if (args[0] instanceof Function) {
+				if (args[0] is Function) {
 					callback = args[0];
 				} else {
 					properties = args[0];
@@ -79,13 +93,15 @@ package com.mixpanel
 			}
 			
 			if (disableAllEvents || disabledEvents.indexOf(event) != -1) {
-				if (callback) { return callback(0); }
+				if (callback != null) { return callback(0); }
 			}
 		
 			if (!properties) { properties = {}; }
 			if (!properties["token"]) { properties.token = config.token; }
 			properties["time"] = _.getUnixTime();
 			properties["mp_lib"] = "as3";
+			
+			this.registerOnce({ 'distinct_id': UIDUtil.createUID() }, "");
 			
 			properties = storage.safeMerge(properties);
 			

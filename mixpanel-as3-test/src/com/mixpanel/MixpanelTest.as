@@ -7,12 +7,15 @@ package com.mixpanel
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
+	import mx.utils.UIDUtil;
+	
 	import org.flexunit.Assert;
 	import org.flexunit.async.Async;
 	
 	public class MixpanelTest
 	{
 		private var mixpanel:Mixpanel;
+		private var localMix:Mixpanel;
 		private var asyncDispatcher:EventDispatcher;
 		private static var asyncIDCounter:int = 0;
 		
@@ -21,6 +24,8 @@ package com.mixpanel
 		{
 			mixpanel = new Mixpanel("4874fb5a6ac20d3c883349defcfb9c99");
 			mixpanel.setConfig({ test: 1 });
+			
+			localMix = new Mixpanel(UIDUtil.createUID());
 			
 			asyncDispatcher = new EventDispatcher();
 		}
@@ -75,5 +80,28 @@ package com.mixpanel
 			}, 2000);
 		}
 		
+		[Test(description="sets distinct_id if user doesn't have one")]
+		public function sets_distinct_id():void {
+			var data:Object,
+				id:String = UIDUtil.createUID();
+			
+			data = localMix.track("test_distinct_id");
+			Assert.assertTrue("track() should set distinct id if it doesn't exist", data.properties.hasOwnProperty('distinct_id'));
+			
+			localMix.identify(id);
+			data = localMix.track("test_distinct_id");
+			Assert.assertEquals("track() should not override an already set distinct id", data.properties["distinct_id"], id);
+		}
+		
 	}
 }
+
+
+
+
+
+
+
+
+
+
