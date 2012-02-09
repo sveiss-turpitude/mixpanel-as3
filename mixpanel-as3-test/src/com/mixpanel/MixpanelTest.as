@@ -158,11 +158,11 @@ package com.mixpanel
 		
 		[Test(description="track() super properties are included")]
 		public function track_super_properties():void {
-			var props = { 'a': 'b', 'c': 'd' };
+			var props:Object = { 'a': 'b', 'c': 'd' };
 			localMix.register(props);
 			
-			var data = localMix.track('test'),
-				dp = data.properties;
+			var data:Object = localMix.track('test'),
+				dp:Object = data.properties;
 			
 			Assert.assertTrue("token included in properties", dp.hasOwnProperty("token"));
 			Assert.assertTrue("time included in properties", dp.hasOwnProperty("time"));
@@ -173,11 +173,11 @@ package com.mixpanel
 		
 		[Test(description="track() manual props override super props")]
 		public function track_manual_override():void {
-			var props = { 'a': 'b', 'c': 'd' };
+			var props:Object = { 'a': 'b', 'c': 'd' };
 			localMix.register(props);
 			
-			var data = localMix.track('test', { "a": "test" }),
-				dp = data.properties;
+			var data:Object = localMix.track('test', { "a": "test" }),
+				dp:Object = data.properties;
 			
 			Assert.assertEquals("manual property overrides successfully", dp["a"], "test");
 			Assert.assertEquals("other superproperties unnaffected", dp["c"], "d");

@@ -1,5 +1,6 @@
 package com.mixpanel
 {
+	import com.adobe.serialization.json.JSONDecoder;
 	import com.adobe.serialization.json.JSONEncoder;
 	import com.mixpanel.Base64Encoder;
 	
@@ -20,7 +21,11 @@ package com.mixpanel
 		
 		public function jsonEncode(o:Object):String
 		{
-			return new JSONEncoder(o).getString();			
+			return new JSONEncoder(o).getString();
+		}
+		
+		public function jsonDecode(s:String):Object {
+			return new JSONDecoder(s, true).getValue();
 		}
 		
 		public function base64Encode(data:String):String

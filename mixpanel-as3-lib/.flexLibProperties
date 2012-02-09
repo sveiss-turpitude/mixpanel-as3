@@ -4,6 +4,10 @@
     <classEntry path="com.mixpanel.Mixpanel"/>
     <classEntry path="com.mixpanel.Util"/>
     <classEntry path="com.mixpanel.Storage"/>
+    <classEntry path="com.mixpanel.IStorageBackend"/>
+    <classEntry path="com.mixpanel.SharedObjectBackend"/>
+    <classEntry path="com.mixpanel.NonPersistentBackend"/>
+    <classEntry path="com.mixpanel.CookieBackend"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

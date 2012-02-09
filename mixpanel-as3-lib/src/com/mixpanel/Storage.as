@@ -1,31 +1,32 @@
 package com.mixpanel
 {
 	import flash.net.SharedObject;
-	import flash.system.Security;
 
 	internal class Storage
 	{
-		private var sharedObject:SharedObject;
 		private var name:String;
+		private var backend:IStorageBackend;
 		
 		public function Storage(config:Object)
 		{
 			name = config.storageName;
+			
+			// initialize backend
+			backend =
+				   new SharedObjectBackend(name).initialize()
+				|| new CookieBackend(name).initialize()
+				|| new NonPersistentBackend(name).initialize();
 			
 			updateCrossDomain(config.crossSubdomainStorage);
 			upgrade(config.token);
 		}
 		
 		public function updateCrossDomain(crossDomainStorage:Boolean):void {
-			try {
-				Security.exactSettings = !crossDomainStorage;
-			} catch(e:Error) {}
-			
-			sharedObject = load(name);
+			backend.updateCrossDomain(crossDomainStorage);
 		}
 		
 		private function upgrade(token:String):void {
-			var oldStorage:SharedObject = load("mixpanel");
+			var oldStorage:SharedObject = SharedObject.getLocal("mixpanel", "/");
 			if (!oldStorage.data[token]) { return; }
 			
 			var oldData:Object = oldStorage.data[token];
@@ -37,47 +38,43 @@ package com.mixpanel
 			oldStorage.flush();
 		}
 		
-		private function load(storageName:String):SharedObject {
-			return SharedObject.getLocal(storageName);	
-		}
-		
 		public function has(key:String):Boolean {
-			return sharedObject.data.hasOwnProperty(key);
+			return backend.has(key);
 		}
 		
 		public function get(key:String):* {
-			return sharedObject.data[key];
+			return backend.get(key);
 		}
 		
 		public function set(key:String, value:*):void {
-			sharedObject.data[key] = value;
-			sharedObject.flush();
+			backend.set(key, value);
 		}
 		
 		public function register(obj:Object):void {
 			for (var key:String in obj) {
-				sharedObject.data[key] = obj[key];
+				backend.set(key, obj[key], false);
 			}
-			sharedObject.flush();
+			
+			backend.save();
 		}
 		
 		public function registerOnce(obj:Object, defaultValue:* = "None"):void {
 			for (var key:String in obj) {
-				if (!sharedObject.data[key] || sharedObject.data[key] == defaultValue) {
-					sharedObject.data[key] = obj[key];	
+				if (!backend.has(key) || backend.get(key) == defaultValue) {
+					backend.set(key, obj[key], false);
 				}
 			}
-			sharedObject.flush();
+			
+			backend.save();
 		}
 		
 		public function unregister(property:String):void {
-			delete sharedObject.data[property];
-			sharedObject.flush();
+			backend.del(property);
 		}
 		
 		public function safeMerge(properties:Object):Object {
-			for (var key:String in sharedObject.data) {
-				if (!properties[key]) { properties[key] = get(key); }
+			for (var key:String in backend.data) {
+				if (!properties[key]) { properties[key] = backend.get(key); }
 			}
 			return properties;
 		}
