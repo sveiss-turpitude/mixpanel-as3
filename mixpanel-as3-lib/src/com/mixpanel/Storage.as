@@ -33,11 +33,16 @@ package com.mixpanel
 			if (oldData["all"]) { register(oldData.all); }
 			if (oldData["events"]) { register(oldData.events); }
 			
-			oldStorage.clear();
+			delete oldStorage.data[token];
+			oldStorage.flush();
 		}
 		
 		private function load(storageName:String):SharedObject {
 			return SharedObject.getLocal(storageName);	
+		}
+		
+		public function has(key:String):Boolean {
+			return sharedObject.data.hasOwnProperty(key);
 		}
 		
 		public function get(key:String):* {

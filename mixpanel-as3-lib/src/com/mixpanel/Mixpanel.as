@@ -17,9 +17,10 @@ package com.mixpanel
 		private var _:Util;
 		private var config:Object;
 		private var token:String;
-		private var storage:Storage;
 		private var disableAllEvents:Boolean = false;
 		private var disabledEvents:Array = [];
+		
+		internal var storage:Storage;
 		
 		private var defaultConfig:Object = {
 			crossSubdomainStorage: true,

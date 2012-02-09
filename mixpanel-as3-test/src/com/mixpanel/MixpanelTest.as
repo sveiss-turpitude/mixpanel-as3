@@ -5,6 +5,7 @@ package com.mixpanel
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.TimerEvent;
+	import flash.net.SharedObject;
 	import flash.utils.Timer;
 	
 	import mx.utils.UIDUtil;
@@ -102,7 +103,7 @@ package com.mixpanel
 		public function disable_events_from_firing():void {
 			localMix.disable();
 			
-			localMix.track("e_a", function(resp) {
+			localMix.track("e_a", function(resp:String):void {
 				Assert.assertEquals("track should return an error", resp, 0);
 			});
 			
@@ -114,15 +115,30 @@ package com.mixpanel
 				Assert.assertEquals("server returned success", resp, "1");
 			});
 			
-			mp.track("event_a", function(resp) {
+			mp.track("event_a", function(resp:String):void {
 				Assert.assertEquals("track should return an error", resp, 0);
 			});
-			mp.track("event_b", function(resp) {
+			mp.track("event_b", function(resp:String):void {
 				start(asyncID, resp);
 			});
-			mp.track("event_c", function(resp) {
+			mp.track("event_c", function(resp:String):void {
 				Assert.assertEquals("track should return an error", resp, 0);
 			});
+		}
+		
+		[Test(description="storage should upgrade")]
+		public function storage_upgrade():void {
+			var old:SharedObject = SharedObject.getLocal("mixpanel"),
+				token:String = UIDUtil.createUID();
+			
+			old.data[token] = {"all": { "prop_1": "test" }, "events": { "prop_2": "test" }, "funnels": { "prop_3": "test" }};
+			
+			var mp:Mixpanel = makeMP(token);
+
+			Assert.assertTrue("old data[all] was imported", mp.storage.has("prop_1"));
+			Assert.assertTrue("old data[events] was imported", mp.storage.has("prop_2"));
+			Assert.assertFalse("old data[funnels] was not imported", mp.storage.has("prop_3"));
+			Assert.assertFalse("old data was deleted", old.data.hasOwnProperty(token));
 		}
 	}
 }
