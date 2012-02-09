@@ -35,6 +35,11 @@ package com.adobe.serialization.json
 	
 	import flash.utils.describeType;
 	
+	/**
+	 * 
+	 * @private
+	 * 
+	 */
 	public class JSONEncoder
 	{
 		

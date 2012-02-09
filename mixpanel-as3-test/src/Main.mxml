@@ -13,7 +13,7 @@
 			import org.flexunit.runner.FlexUnitCore;
 			
 			private var core:FlexUnitCore;
-			public function runTests() {
+			public function runTests():void {
 				core = new FlexUnitCore();
 				core.addListener(uiListener);
 				core.run(MixpanelTestSuite);

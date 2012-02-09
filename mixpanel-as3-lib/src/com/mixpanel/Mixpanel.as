@@ -17,7 +17,14 @@ package com.mixpanel
 		private var disableAllEvents:Boolean = false;
 		private var disabledEvents:Array = [];
 		
+		/**
+		 * @private 
+		 */		
 		internal var storage:Storage;
+		
+		/**
+		 * @private 
+		 */
 		internal var config:Object;
 		
 		private var defaultConfig:Object = {
@@ -25,6 +32,12 @@ package com.mixpanel
 			test: false
 		};
 		
+		/**
+		 * Create an instance of the Mixpanel library 
+		 * 
+		 * @param token your Mixpanel API token
+		 * 
+		 */		
 		public function Mixpanel(token:String)
 		{
 			_ = new Util();
@@ -124,6 +137,17 @@ package com.mixpanel
 			return truncatedData;
 		}
 		
+		/**
+		 * Disable events on the Mixpanel object.  If passed no arguments,
+	     * this function disables tracking of any event.  If passed an
+	     * array of event names, those events will be disabled, but other
+	     * events will continue to be tracked.
+	     *
+	     * Note: this function doesn't stop regular mixpanel functions from
+	     * firing such as register and name_tag. 
+		 *
+		 * @param events A array of event names to disable 
+		 */		
 		public function disable(events:Array = null):void
 		{
 			if (events == null) {
@@ -133,31 +157,84 @@ package com.mixpanel
 			}
 		}
 		
+		/**
+  		 * Register a set of super properties, which are included with all
+	     * events/funnels.  This will overwrite previous super property
+	     * values.  It is mutable unlike register_once.
+		 * 
+		 * @param properties Associative array of properties to store about the user
+		 */		
 		public function register(properties:Object):void
 		{
 			storage.register(properties);			
 		}
 		
+		/**
+		 * Register a set of super properties only once.  This will not
+		 * overwrite previous super property values, unlike register().
+		 * It's basically immutable.
+		 *  
+		 * @param properties Associative array of properties to store about the user
+		 * @param defaultValue Value to override if already set in super properties (ex: "False")
+		 * 
+		 */		
 		public function register_once(properties:Object, defaultValue:* = null):void
 		{
 			storage.registerOnce(properties, defaultValue);
 		}
 		
+		/**
+		 * Delete a super property stored with the current user.
+		 *  
+		 * @param property the name of the super property to remove
+		 * 
+		 */		
 		public function unregister(property:String):void
 		{
 			storage.unregister(property);
 		}
 		
+		/**
+		 * Identify a user with a unique id.  All subsequent
+	     * actions caused by this user will be tied to this identity.  This
+	     * proeprty is used to track unique visitors.  If the method is
+	     * never called, then unique visitors will be identified by a UUID
+	     * generated the first time they visit the site.
+		 * 
+		 * @param uniqueID A string that uniquely identifies the user
+		 * 
+		 */		
 		public function identify(uniqueID:String):void
 		{
 			storage.register({ "distinct_id": uniqueID });
 		}
 		
+		/**
+		 * Provide a string to recognize the user by.  The string passed to
+	     * this method will appear in the Mixpanel Streams product rather
+	     * than an automatically generated name.  Name tags do not have to
+	     * be unique.
+		 *  
+		 * @param name A human readable name for the user
+		 * 
+		 */		
 		public function name_tag(name:String):void
 		{
 			storage.register({ "mp_name_tag": name });
 		}
 		
+		/**
+		 * Update the configuration of a mixpanel library instance.
+		 * 
+		 * The default config is:
+		 	{
+				crossSubdomainStorage: true,			// super properties span subdomains
+				test: false								// enable test in development mode
+			};
+		 *  
+		 * @param config A dictionary of new configuration values to update
+		 * 
+		 */		
 		public function set_config(config:Object):void
 		{
 			if (config["crossSubdomainStorage"] && config.crossSubdomainStorage != this.config.crossSubdomainStorage) {
