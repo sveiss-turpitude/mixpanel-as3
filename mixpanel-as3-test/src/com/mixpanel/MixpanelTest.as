@@ -140,6 +140,21 @@ package com.mixpanel
 			Assert.assertFalse("old data[funnels] was not imported", mp.storage.has("prop_3"));
 			Assert.assertFalse("old data was deleted", old.data.hasOwnProperty(token));
 		}
+		
+		[Test(description="mixpanel instances should load data from shared objects")]
+		public function load_save_data():void {
+			var token:String = UIDUtil.createUID(),
+				mp:Mixpanel = makeMP(token),
+				prop:String = UIDUtil.createUID();
+			
+			mp.register({ "test": prop });
+			
+			var mp2:Mixpanel = makeMP(token);
+			Assert.assertEquals("library should load existing shared object", mp2.storage.get("test"), prop);
+			
+			var mp3:Mixpanel = makeMP();
+			Assert.assertFalse("library should create new shared object", mp3.storage.has("test"));
+		}
 	}
 }
 
