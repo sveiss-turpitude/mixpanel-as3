@@ -50,7 +50,13 @@ package com.mixpanel
 		}
 		
 		public function initialize():IStorageBackend {
-			if (!ExternalInterface.available) {
+			if (ExternalInterface.available) {
+				try {
+					ExternalInterface.addCallback("test_external_iface", null);					
+				} catch (error:SecurityError) {
+					return null;
+				}
+			} else {
 				return null;
 			}
 			
