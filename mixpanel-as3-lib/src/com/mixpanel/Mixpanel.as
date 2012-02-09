@@ -10,8 +10,6 @@ package com.mixpanel
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	
-	import mx.utils.UIDUtil;
-	
 	public class Mixpanel
 	{
 		private var _:Util;
@@ -102,7 +100,7 @@ package com.mixpanel
 			properties["time"] = _.getUnixTime();
 			properties["mp_lib"] = "as3";
 			
-			this.register_once({ 'distinct_id': UIDUtil.createUID() }, "");
+			this.register_once({ 'distinct_id': _.UUID() }, "");
 			
 			properties = storage.safeMerge(properties);
 			

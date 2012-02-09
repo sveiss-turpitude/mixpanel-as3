@@ -5,6 +5,10 @@ package com.mixpanel
 	import com.mixpanel.Base64Encoder;
 	
 	import flash.external.ExternalInterface;
+	import flash.system.System;
+	import flash.ui.Mouse;
+	import flash.utils.ByteArray;
+	import flash.utils.getTimer;
 
 	internal class Util
 	{
@@ -78,5 +82,42 @@ package com.mixpanel
 			
 			return ret;
 		}
+		
+		// Char codes for 0123456789ABCDEF
+		private static const ALPHA_CHAR_CODES:Array = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70];
+
+		// From http://code.google.com/p/actionscript-uuid/
+		// MIT License
+		public function UUID():String {
+			var buff:ByteArray = new ByteArray(),
+				r:uint = uint(new Date().time);					
+			buff.writeUnsignedInt(System.totalMemory ^ r);
+			buff.writeInt(getTimer() ^ r);
+			buff.writeDouble(Math.random() * r);
+			
+			buff.position = 0;
+			var chars:Array = new Array(36);
+			var index:uint = 0;
+			for (var i:uint = 0; i < 16; i++)
+			{
+				if (i == 4 || i == 6 || i == 8 || i == 10)
+				{
+					chars[index++] = 45; // Hyphen char code
+				}
+				var b:int = buff.readByte();
+				chars[index++] = ALPHA_CHAR_CODES[(b & 0xF0) >>> 4];
+				chars[index++] = ALPHA_CHAR_CODES[(b & 0x0F)];
+			}
+			return String.fromCharCode.apply(null, chars);
+		}
 	}
 }
+
+
+
+
+
+
+
+
+

@@ -20,6 +20,8 @@ package com.mixpanel
 		private var asyncDispatcher:EventDispatcher;
 		private static var asyncIDCounter:int = 0;
 		
+		private var mixpanelUtil:Util = new Util();
+		
 		private function makeMP(token:String=null, config:Object=null):Mixpanel {
 			if (!token) { token = UIDUtil.createUID(); }
 			var mp:Mixpanel = new Mixpanel(token);
