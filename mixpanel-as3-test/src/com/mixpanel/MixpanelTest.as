@@ -23,7 +23,7 @@ package com.mixpanel
 		private function makeMP(token:String=null, config:Object=null):Mixpanel {
 			if (!token) { token = UIDUtil.createUID(); }
 			var mp:Mixpanel = new Mixpanel(token);
-			if (config) { mp.setConfig(config); }
+			if (config) { mp.set_config(config); }
 			return mp;
 		}
 		
@@ -186,7 +186,7 @@ package com.mixpanel
 		[Test(description="set_config works")]
 		public function set_config():void {
 			Assert.assertEquals("config.test is false", localMix.config.test, false);
-			localMix.setConfig({ test: true });
+			localMix.set_config({ test: true });
 			Assert.assertEquals("config.test is true", localMix.config.test, true);
 		}
 		
@@ -208,11 +208,11 @@ package com.mixpanel
 			
 			Assert.assertFalse("empty before setting", localMix.storage.has("hi"));
 			
-			localMix.registerOnce(props);
+			localMix.register_once(props);
 			
 			Assert.assertTrue("prop set properly", localMix.storage.has("hi"));
 			
-			localMix.registerOnce(props1);
+			localMix.register_once(props1);
 			
 			Assert.assertEquals("doesn't override", localMix.storage.get("hi"), props["hi"]);
 		}
@@ -252,7 +252,7 @@ package com.mixpanel
 			
 			Assert.assertFalse("empty before setting", localMix.storage.has("mp_name_tag"));
 			
-			localMix.nameTag(name);
+			localMix.name_tag(name);
 			Assert.assertEquals("name tag set", localMix.storage.get("mp_name_tag"), name);
 		}
 

@@ -102,7 +102,7 @@ package com.mixpanel
 			properties["time"] = _.getUnixTime();
 			properties["mp_lib"] = "as3";
 			
-			this.registerOnce({ 'distinct_id': UIDUtil.createUID() }, "");
+			this.register_once({ 'distinct_id': UIDUtil.createUID() }, "");
 			
 			properties = storage.safeMerge(properties);
 			
@@ -140,7 +140,7 @@ package com.mixpanel
 			storage.register(properties);			
 		}
 		
-		public function registerOnce(properties:Object, defaultValue:* = null):void
+		public function register_once(properties:Object, defaultValue:* = null):void
 		{
 			storage.registerOnce(properties, defaultValue);
 		}
@@ -155,12 +155,12 @@ package com.mixpanel
 			storage.register({ "distinct_id": uniqueID });
 		}
 		
-		public function nameTag(name:String):void
+		public function name_tag(name:String):void
 		{
 			storage.register({ "mp_name_tag": name });
 		}
 		
-		public function setConfig(config:Object):void
+		public function set_config(config:Object):void
 		{
 			if (config["crossSubdomainStorage"] && config.crossSubdomainStorage != this.config.crossSubdomainStorage) {
 				storage.updateCrossDomain(config.crossSubdomainStorage);
