@@ -19,7 +19,7 @@ package com.mixpanel
 		
 		private function load():IStorageBackend {
 			try {
-				sharedObject = SharedObject.getLocal(name, "/");
+				sharedObject = SharedObject.getLocal("mixpanel/" + name, "/");
 			} catch (e:Error) {
 				return null;
 			}

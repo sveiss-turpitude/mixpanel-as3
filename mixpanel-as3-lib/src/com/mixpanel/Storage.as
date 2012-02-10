@@ -26,7 +26,7 @@ package com.mixpanel
 		}
 		
 		private function upgrade(token:String):void {
-			var oldStorage:SharedObject = SharedObject.getLocal("mixpanel", "/");
+			var oldStorage:SharedObject = SharedObject.getLocal("mixpanel");
 			if (!oldStorage.data[token]) { return; }
 			
 			var oldData:Object = oldStorage.data[token];
