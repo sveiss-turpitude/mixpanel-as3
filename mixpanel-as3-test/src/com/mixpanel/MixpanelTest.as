@@ -1,5 +1,7 @@
 package com.mixpanel
 {
+	import flash.utils.getQualifiedClassName;
+	
 	import com.mixpanel.Mixpanel;
 	
 	import flash.events.Event;
@@ -21,6 +23,28 @@ package com.mixpanel
 		private static var asyncIDCounter:int = 0;
 		
 		private var mixpanelUtil:Util = new Util();
+		
+		private function objEquals(obj1:Object, obj2:Object):Boolean {
+			return objContains(obj1, obj2) && objContains(obj2, obj1);
+		}
+		
+		// check to see if obj contains query, and the values of the elements of query
+		// are the same as the values of the elements of query in obj
+		private function objContains(obj:Object, query:Object):Boolean {
+			for (var key:String in query) {
+				if (!(key in obj)) { return false; }
+				
+				if (getQualifiedClassName(query[key]) == "Array") {
+					var a:Array = query[key] as Array;
+					for (var i:String in a) {
+						if (a[i] !== obj[key][i]) { return false; }
+					}
+				} else if (obj[key] !== query[key]) {
+					return false;
+				} 
+			}
+			return true;
+		}
 		
 		private function makeMP(token:String=null, config:Object=null):Mixpanel {
 			if (!token) { token = UIDUtil.createUID(); }
@@ -84,8 +108,34 @@ package com.mixpanel
 			});
 			
 			Async.delayCall(this, function():void {
-				Assert.assertTrue("Both track()'s failed to fire", result.indexOf(1) != -1 && result.indexOf(2) != -1);
+				Assert.assertTrue("Both track()'s successfully fired", result.indexOf(1) != -1 && result.indexOf(2) != -1);
 			}, 2000);
+		}
+		
+		[Test(description="track should support typed properties")]
+		public function track_types():void {
+			var tests:Array = [
+				{"number": 3},
+				{"string": "hello", "number": 5},
+				{"string": "hello", "zero": 0},
+				{"string": "hello", "zero": 0},
+					
+				{"boolean_f": false, "boolean_t": true},
+				{"boolean": false, "string": "hello"},
+					
+				{"date": new Date()},
+				{"date": new Date(), "string": "hello"},
+					
+				{"list": ["hello", "there", 3]},
+				{"list": ["hello", "there", 3], "string": "hello"}
+			];
+			
+			for (var i:int = 0; i < tests.length; i++) {
+				var test:Object = tests[i],
+					resp:Object = mixpanel.track("test_types", test);
+				
+				Assert.assertTrue("should support properties object: " + i, this.objContains(resp.properties, test));
+			}
 		}
 		
 		[Test(description="sets distinct_id if user doesn't have one")]

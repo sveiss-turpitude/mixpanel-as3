@@ -8,6 +8,7 @@ package com.mixpanel
 	import flash.system.System;
 	import flash.ui.Mouse;
 	import flash.utils.ByteArray;
+	import flash.utils.getQualifiedClassName;
 	import flash.utils.getTimer;
 
 	internal class Util
@@ -62,16 +63,18 @@ package com.mixpanel
 		}
 		
 		public function truncate(obj:*, length:int = 255):* {
-			var ret:*;
+			var ret:*,
+				className:String = getQualifiedClassName(obj),
+				len:int, i:int;
 			
-			if (obj is String) {
+			if (className == "String") {
 				ret = (obj as String).slice(0, length);
-			} else if (obj is Array) {
-				ret = [];
-				for (var val:* in obj) {
-					ret.push(truncate(val, length));
+			} else if (className == "Array") {
+				ret = [], len = obj.length;
+				for (i = 0; i < len; i++) {
+					ret.push(truncate(obj[i], length));
 				}
-			} else if (obj is Object) {
+			} else if (className == "Object") {
 				ret = {};
 				for (var key:String in obj) {
 					ret[key] = truncate(obj[key], length);

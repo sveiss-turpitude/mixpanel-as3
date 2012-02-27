@@ -107,16 +107,17 @@ package com.mixpanel
 			if (disableAllEvents || disabledEvents.indexOf(event) != -1) {
 				if (callback != null) { return callback(0); }
 			}
-		
-			if (!properties) { properties = {}; }
+
+			properties = properties ? _.extend({}, properties) : {};
+
 			if (!properties["token"]) { properties.token = config.token; }
 			properties["time"] = _.getUnixTime();
 			properties["mp_lib"] = "as3";
-			
+
 			this.register_once({ 'distinct_id': _.UUID() }, "");
-			
+
 			properties = storage.safeMerge(properties);
-			
+
 			var data:Object = {
 				"event": event,
 				"properties": properties
