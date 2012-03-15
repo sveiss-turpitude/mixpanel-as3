@@ -10,6 +10,11 @@ package com.mixpanel
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	
+	/**
+	 * Mixpanel AS3 API
+	 * Version 2.0.0
+	 */
+	
 	public class Mixpanel
 	{
 		private var _:Util;
