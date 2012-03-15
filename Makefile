@@ -5,3 +5,9 @@ docs:
 		-output ./mixpanel-as3-lib/docs 								\
 		-main-title "Mixpanel AS3 Library"								\
 		-window-title "Mixpanel AS3 Library"
+
+release:
+	git checkout gh-pages
+	git reset --hard HEAD
+	git merge master
+	make docs
