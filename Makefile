@@ -11,3 +11,4 @@ release:
 	git reset --hard HEAD
 	git merge master
 	make docs
+	git commit -am "Updated Docs; Latest Release"
