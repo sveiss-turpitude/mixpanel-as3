@@ -12,8 +12,8 @@
 				-->
 			</script><div xmlns:fn="http://www.w3.org/2005/xpath-functions" class="MainContent"><table class="classHeaderTable" cellpadding="0" cellspacing="0"><tr><td class="classHeaderTableLabel">Package</td><td><a href="package-detail.html" onclick="javascript:loadClassListFrame('class-list.html')">com.mixpanel</a></td></tr><tr><td class="classHeaderTableLabel">Class</td><td class="classSignature">public  class  Mixpanel</td></tr><tr><td class="classHeaderTableLabel">Inheritance</td><td class="inheritanceList">Mixpanel  <img src="../../images/inherit-arrow.gif" title="Inheritance" alt="Inheritance" class="inheritArrow"> Object</td></tr></table><p></p><p></p><p></p>
 	 Mixpanel AS3 API
-	 Version 2.0.0
-	 <p></p><br/><hr></div><a name="methodSummary"></a><div class="summarySection"><div class="summaryTableTitle">Public Methods </div><table cellspacing="0" cellpadding="3" class="summaryTable " id="summaryTableMethod"><tr><th>&nbsp;</th><th colspan="2">Method</th><th class="summaryTableOwnerCol">Defined By</th></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#Mixpanel()" class="signatureLink">Mixpanel</a>(token:String)</div><div class="summaryTableDescription">
+	 <p>Version 2.0.0</p>
+	           <p></p><br/><hr></div><a name="methodSummary"></a><div class="summarySection"><div class="summaryTableTitle">Public Methods </div><table cellspacing="0" cellpadding="3" class="summaryTable " id="summaryTableMethod"><tr><th>&nbsp;</th><th colspan="2">Method</th><th class="summaryTableOwnerCol">Defined By</th></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#Mixpanel()" class="signatureLink">Mixpanel</a>(token:String)</div><div class="summaryTableDescription">
 		 Create an instance of the Mixpanel library 
 		 
 		 </div></td><td class="summaryTableOwnerCol">Mixpanel</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#disable()" class="signatureLink">disable</a>(events:Array = null):void</div><div class="summaryTableDescription">
@@ -37,13 +37,13 @@
 	     this function disables tracking of any event.  If passed an
 	     array of event names, those events will be disabled, but other
 	     events will continue to be tracked.
-	     	     Note: this function doesn't stop regular mixpanel functions from
-	     firing such as register and name_tag. 
+	     	     <p>Note: this function doesn't stop regular mixpanel functions from
+	     firing such as register and name_tag.</p> 
 		 		 </p><p><span class="label"> Parameters </span><table cellpadding="0" cellspacing="0" border="0"><tr><td width="20px"></td><td><code><span class="label">events</span>:Array</code> (default = <code>null</code>)<code></code> &mdash; A array of event names to disable 
 		 </td></tr></table></p></div><a name="identify()"></a><a name="identify(String)"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">identify</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code> public function identify(uniqueID:String):void</code><p></p><p></p><p>
 		 Identify a user with a unique id.  All subsequent
 	     actions caused by this user will be tied to this identity.  This
-	     proeprty is used to track unique visitors.  If the method is
+	     property is used to track unique visitors.  If the method is
 	     never called, then unique visitors will be identified by a UUID
 	     generated the first time they visit the site.
 		 
@@ -74,11 +74,16 @@
 		 </td></tr></table></p></div><a name="set_config()"></a><a name="set_config(Object)"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">set_config</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code> public function set_config(config:Object):void</code><p></p><p></p><p>
 		 Update the configuration of a mixpanel library instance.
 		 
-		 The default config is:
-		 	{
-				crossSubdomainStorage: true,			// super properties span subdomains
-				test: false								// enable test in development mode
-			};
+		 <p>The default config is:</p>
+		 <pre>
+		 {
+		     // super properties span subdomains
+		     crossSubdomainStorage: true,
+		 
+		     // enable test in development mode
+		     test: false
+		 };
+		 </pre>
 		  
 		 </p><p><span class="label"> Parameters </span><table cellpadding="0" cellspacing="0" border="0"><tr><td width="20px"></td><td><code><span class="label">config</span>:Object</code> &mdash; A dictionary of new configuration values to update
 		 
@@ -88,7 +93,7 @@
 		  
 		 </p><p><span class="label"> Parameters </span><table cellpadding="0" cellspacing="0" border="0"><tr><td width="20px"></td><td><code><span class="label">event</span>:String</code> &mdash; the name of the event
 		 </td></tr><tr><td class="paramSpacer">&nbsp;</td></tr><tr><td width="20px"></td><td><code>... <span class="label">args</span></code> &mdash; if the first arg in args is an object, it will be used
-		 as the properties object, the second arg is an optional callback function.
+		 as the properties object.  The last argument is a callback function.
 		 The callback and properties arguments are both optional.
 		 </td></tr></table></p><p></p><span class="label">Returns</span><table cellpadding="0" cellspacing="0" border="0"><tr><td width="20"></td><td><code>Object</code> &mdash; the data sent to the server
 		 
@@ -97,4 +102,4 @@
 		  
 		 </p><p><span class="label"> Parameters </span><table cellpadding="0" cellspacing="0" border="0"><tr><td width="20px"></td><td><code><span class="label">property</span>:String</code> &mdash; the name of the super property to remove
 		 
-		 </td></tr></table></p></div><br/><br/><hr><br/><p></p><center class="copyright"><footer></footer><br/>Thu Mar 15 2012, 12:16 PM -07:00  </center></div></body></html><!--<br/>Thu Mar 15 2012, 12:16 PM -07:00  -->
+		 </td></tr></table></p></div><br/><br/><hr><br/><p></p><center class="copyright"><footer></footer><br/>Thu Mar 15 2012, 03:10 PM -07:00  </center></div></body></html><!--<br/>Thu Mar 15 2012, 03:10 PM -07:00  -->

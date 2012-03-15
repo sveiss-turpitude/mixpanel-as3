@@ -12,7 +12,7 @@ package com.mixpanel
 	
 	/**
 	 * Mixpanel AS3 API
-	 * Version 2.0.0
+	 * <p>Version 2.0.0</p>
 	 */
 	
 	public class Mixpanel
@@ -89,7 +89,7 @@ package com.mixpanel
 		 *  
 		 * @param event the name of the event
 		 * @param args if the first arg in args is an object, it will be used
-		 * as the properties object, the second arg is an optional callback function.
+		 * as the properties object.  The last argument is a callback function.
 		 * The callback and properties arguments are both optional.
 		 * @return the data sent to the server
 		 * 
@@ -149,8 +149,8 @@ package com.mixpanel
 	     * array of event names, those events will be disabled, but other
 	     * events will continue to be tracked.
 	     *
-	     * Note: this function doesn't stop regular mixpanel functions from
-	     * firing such as register and name_tag. 
+	     * <p>Note: this function doesn't stop regular mixpanel functions from
+	     * firing such as register and name_tag.</p> 
 		 *
 		 * @param events A array of event names to disable 
 		 */		
@@ -203,7 +203,7 @@ package com.mixpanel
 		/**
 		 * Identify a user with a unique id.  All subsequent
 	     * actions caused by this user will be tied to this identity.  This
-	     * proeprty is used to track unique visitors.  If the method is
+	     * property is used to track unique visitors.  If the method is
 	     * never called, then unique visitors will be identified by a UUID
 	     * generated the first time they visit the site.
 		 * 
@@ -232,11 +232,16 @@ package com.mixpanel
 		/**
 		 * Update the configuration of a mixpanel library instance.
 		 * 
-		 * The default config is:
-		 	{
-				crossSubdomainStorage: true,			// super properties span subdomains
-				test: false								// enable test in development mode
-			};
+		 * <p>The default config is:</p>
+		 * <pre>
+		 * {
+		 *     // super properties span subdomains
+		 *     crossSubdomainStorage: true,
+		 * 
+		 *     // enable test in development mode
+		 *     test: false
+		 * };
+		 * </pre>
 		 *  
 		 * @param config A dictionary of new configuration values to update
 		 * 
