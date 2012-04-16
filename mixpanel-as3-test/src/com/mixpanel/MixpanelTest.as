@@ -96,6 +96,18 @@ package com.mixpanel
 			});
 		}
 		
+		[Test(async, description="track should fail gracefully if api is down")]
+		public function track_api_down():void {
+			var asyncID:int = asyncHandler(function(resp:String):void {
+				Assert.assertEquals("server returned error", resp, "0");
+			});
+			
+			localMix.set_config({ apiHost: "http://badapiasef.mixpanel.com/track/" });
+			localMix.track("test_track", {"hello": "world"}, function(resp:String):void {	
+				start(asyncID, resp);
+			});
+		}
+		
 		[Test(async, description="check parallel track()'s")]
 		public function track_multiple():void {
 			var result:Array = [];

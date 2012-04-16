@@ -4,6 +4,7 @@ package com.mixpanel
 	import com.mixpanel.Util;
 	
 	import flash.events.Event;
+	import flash.events.IOErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
@@ -76,6 +77,12 @@ package com.mixpanel
 				function(e:Event):void {
 					if(callback != null) {
 						callback(loader.data);
+					}
+				});
+			loader.addEventListener(IOErrorEvent.IO_ERROR,
+				function(e:IOErrorEvent):void {
+					if(callback != null) {
+						callback(0);
 					}
 				});
 			
