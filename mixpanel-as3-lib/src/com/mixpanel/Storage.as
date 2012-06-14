@@ -12,10 +12,7 @@ package com.mixpanel
 			name = config.storageName;
 			
 			// initialize backend
-			backend =
-				   new SharedObjectBackend(name).initialize()
-				|| new CookieBackend(name).initialize()
-				|| new NonPersistentBackend(name).initialize();
+			backend = new NonPersistentBackend(name).initialize();
 			
 			updateCrossDomain(config.crossSubdomainStorage);
 			upgrade(config.token);
